@@ -1,4 +1,4 @@
-#include "options.h"
+#include "ft_options.h"
 
 void	init_options(t_nm_options *opts)
 {

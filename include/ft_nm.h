@@ -1,14 +1,14 @@
 #ifndef FT_NM_H
-#define FT_NM_H
+# define FT_NM_H
 
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "libft.h"
-#include "options.h"
+# include <fcntl.h>
+# include <sys/mman.h>
+# include <sys/stat.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include "libft.h"
+# include "ft_options.h"
 
 /**
 open(2) close(2) mmap(2) munmap(2) write(2)
