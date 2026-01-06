@@ -1,4 +1,5 @@
 #include "ft_options.h"
+#include "ft_nm_node.h"
 
 void	init_options(t_nm_options *opts)
 {
@@ -82,24 +83,38 @@ static int	handle_short_option_arg(t_nm_options *opts, char *arg)
 
 static int	add_file_to_list(t_nm_options *opts, char *filename)
 {
-	t_list	*node;
+	t_list		*node;
+	t_nm_node	*nm_node;
 
-	node = ft_lstnew(filename);
-	if (!node)
+	nm_node = new_nm_node(filename);
+	if (!nm_node)
 		return (0);
+	node = ft_lstnew(nm_node);
+	if (!node)
+	{
+		destroy_node(nm_node);
+		return (0);
+	}
 	ft_lstadd_back(&opts->files, node);
 	return (1);
 }
 
 static int	add_default_file(t_nm_options *opts)
 {
-	t_list	*node;
+	t_list		*node;
+	t_nm_node	*nm_node;
 
 	if (opts->files == NULL)
 	{
-		node = ft_lstnew("a.out");
-		if (!node)
+		nm_node = new_nm_node("a.out");
+		if (!nm_node)
 			return (0);
+		node = ft_lstnew(nm_node);
+		if (!node)
+		{
+			destroy_node(nm_node);
+			return (0);
+		}
 		ft_lstadd_back(&opts->files, node);
 	}
 	return (1);

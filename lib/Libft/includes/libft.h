@@ -23,6 +23,10 @@ typedef struct s_list
 	struct s_list	*next;
 }		t_list;
 
+#define true 1
+#define false 0
+typedef int	bool;
+
 long int	ft_atoi(const char *str);
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);

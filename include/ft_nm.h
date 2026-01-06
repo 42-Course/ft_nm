@@ -1,12 +1,13 @@
 #ifndef FT_NM_H
 # define FT_NM_H
 
-# include <fcntl.h>
-# include <sys/mman.h>
-# include <sys/stat.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+# include <fcntl.h> // open
+# include <stdio.h> // perror, printf
+# include <stdlib.h> // exit, EXIT_FAILURE
+# include <sys/mman.h> // mmap, munmap
+# include <sys/stat.h> // fstat
+# include <unistd.h> // close
+# include <elf.h> // elf headers
 # include "libft.h"
 # include "ft_options.h"
 
