@@ -12,7 +12,8 @@ LIBFT_DIR = lib/Libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC = $(SRC_DIR)/main.c \
-	$(SRC_DIR)/ft_options.c
+	$(SRC_DIR)/ft_options.c \
+	$(SRC_DIR)/ft_nm.c
 
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

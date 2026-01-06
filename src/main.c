@@ -32,15 +32,16 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	if (opts.debug_syms)
-		printf("Debug symbols enabled\n");
+		ft_putstr_fd("Debug symbols enabled\n", 1);
 	if (opts.extern_only)
-		printf("Extern-only enabled\n");
+		ft_putstr_fd("Extern-only enabled\n", 1);
 	if (opts.undefined_only)
-		printf("Undefined-only enabled\n");
+		ft_putstr_fd("Undefined-only enabled\n", 1);
 	if (opts.reverse_sort)
-		printf("Reverse sort enabled\n");
+		ft_putstr_fd("Reverse sort enabled\n", 1);
 	if (opts.no_sort)
-		printf("No sort enabled\n");
+		ft_putstr_fd("No sort enabled\n", 1);
+	nm(&opts);
 	ft_lstclear(&opts.files, NULL);
 	return (0);
 }
