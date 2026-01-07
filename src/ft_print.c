@@ -31,7 +31,7 @@ static void	print_error(t_nm_node *node)
 
 static void	print_symbol(t_symbol *symbol, t_nm_node *node)
 {
-	if (!symbol || !symbol->name || !symbol->name[0])
+	if (!symbol)
 		return ;
 	if (symbol->shndx == SHN_UNDEF)
 	{

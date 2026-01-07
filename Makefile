@@ -1,7 +1,7 @@
 NAME = ft_nm
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pedantic
+CFLAGS = -Wall -Wextra -Werror -pedantic -g
 IFLAGS = -I./include -I./lib/Libft/includes
 
 SRC_DIR = src
@@ -42,6 +42,10 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	make -C $(LIBFT_DIR) fclean
+
+test: $(NAME)
+	cp $(NAME) tests/ft_nm
+	cd tests && bash tester.sh
 
 re: fclean all
 

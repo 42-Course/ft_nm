@@ -20,7 +20,7 @@ static t_list * m_merge(t_list * a, t_list * b, int (*cmp)(void *, void *))
 	else if (b == NULL)
 		return (a);
 
-	if (cmp(a->content, b->content) > 0) {
+	if (cmp(a->content, b->content) <= 0) {
 		result = a;
 		result->next = m_merge(a->next, b, cmp);
 	}

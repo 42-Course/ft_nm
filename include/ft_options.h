@@ -15,6 +15,7 @@ typedef struct s_nm_options
 }	t_nm_options;
 
 void	init_options(t_nm_options *opts);
-int		parse_arguments(t_nm_options *opts, int argc, char **argv, t_list **nm_nodes);
+int		parse_arguments(t_nm_options *opts, int argc,
+			char **argv, t_list **nm_nodes);
 
 #endif

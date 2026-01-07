@@ -73,6 +73,64 @@ static char	*get_strtab(t_nm_node *node, void *section_headers,
 	return (strtab);
 }
 
+static char	*get_shstrtab(t_nm_node *node, void *section_headers)
+{
+	uint32_t	shstrndx;
+	char		*shstrtab;
+
+	shstrtab = NULL;
+	if (node->is_64bit)
+	{
+		Elf64_Shdr *shdrs = (Elf64_Shdr *)section_headers;
+		shstrndx = node->elf64_header->e_shstrndx;
+		shstrtab = node->file_content + shdrs[shstrndx].sh_offset;
+	}
+	else
+	{
+		Elf32_Shdr *shdrs = (Elf32_Shdr *)section_headers;
+		shstrndx = node->elf32_header->e_shstrndx;
+		shstrtab = node->file_content + shdrs[shstrndx].sh_offset;
+	}
+	return (shstrtab);
+}
+
+static char	*get_symbol_name(char *strtab, char *shstrtab,
+				void *section_headers, void *sym_entry, int is_64bit)
+{
+	uint32_t	st_name;
+	uint32_t	sh_name;
+	int			type;
+	uint16_t	shndx;
+
+	if (is_64bit)
+	{
+		Elf64_Sym *sym = (Elf64_Sym *)sym_entry;
+		st_name = sym->st_name;
+		type = ELF64_ST_TYPE(sym->st_info);
+		shndx = sym->st_shndx;
+		if (type == STT_SECTION && shndx < SHN_LORESERVE)
+		{
+			Elf64_Shdr *shdr = &((Elf64_Shdr *)section_headers)[shndx];
+			sh_name = shdr->sh_name;
+			return (shstrtab + sh_name);
+		}
+	}
+	else
+	{
+		Elf32_Sym *sym = (Elf32_Sym *)sym_entry;
+		st_name = sym->st_name;
+		type = ELF32_ST_TYPE(sym->st_info);
+		shndx = sym->st_shndx;
+		if (type == STT_SECTION && shndx < SHN_LORESERVE)
+		{
+			Elf32_Shdr *shdr = &((Elf32_Shdr *)section_headers)[shndx];
+			sh_name = shdr->sh_name;
+			return (shstrtab + sh_name);
+		}
+	}
+	return (strtab + st_name);
+}
+
 static char	get_symbol_type_from_section(t_symbol *symbol, void *section_headers,
 				t_nm_node *node)
 {
@@ -142,7 +200,7 @@ static char	get_symbol_type(t_symbol *symbol, void *section_headers,
 }
 
 static t_list	*extract_symbols_64(t_nm_node *node, void *symtab_section,
-				char *strtab, void *section_headers)
+				char *strtab, void *section_headers, char *shstrtab)
 {
 	Elf64_Shdr	*symtab_shdr;
 	Elf64_Sym	*symtab;
@@ -161,7 +219,8 @@ static t_list	*extract_symbols_64(t_nm_node *node, void *symtab_section,
 		temp_sym.info = symtab[i].st_info;
 		temp_sym.shndx = symtab[i].st_shndx;
 		symbol = new_symbol(
-			strtab + symtab[i].st_name,
+			get_symbol_name(strtab, shstrtab, section_headers,
+				&symtab[i], 1),
 			symtab[i].st_value,
 			symtab[i].st_info,
 			symtab[i].st_other,
@@ -175,7 +234,7 @@ static t_list	*extract_symbols_64(t_nm_node *node, void *symtab_section,
 }
 
 static t_list	*extract_symbols_32(t_nm_node *node, void *symtab_section,
-				char *strtab, void *section_headers)
+				char *strtab, void *section_headers, char *shstrtab)
 {
 	Elf32_Shdr	*symtab_shdr;
 	Elf32_Sym	*symtab;
@@ -194,7 +253,8 @@ static t_list	*extract_symbols_32(t_nm_node *node, void *symtab_section,
 		temp_sym.info = symtab[i].st_info;
 		temp_sym.shndx = symtab[i].st_shndx;
 		symbol = new_symbol(
-			strtab + symtab[i].st_name,
+			get_symbol_name(strtab, shstrtab, section_headers,
+				&symtab[i], 0),
 			symtab[i].st_value,
 			symtab[i].st_info,
 			symtab[i].st_other,
@@ -212,6 +272,7 @@ void	extract_nm_symbols(t_nm_node *node)
 	void	*section_headers;
 	void	*symtab_section;
 	char	*strtab;
+	char	*shstrtab;
 
 	if (!node || node->error != NM_OK)
 		return ;
@@ -224,10 +285,11 @@ void	extract_nm_symbols(t_nm_node *node)
 	strtab = get_strtab(node, section_headers, symtab_section);
 	if (node->error != NM_OK)
 		return ;
+	shstrtab = get_shstrtab(node, section_headers);
 	if (node->is_64bit)
 		node->symbols = extract_symbols_64(node, symtab_section, strtab,
-				section_headers);
+				section_headers, shstrtab);
 	else
 		node->symbols = extract_symbols_32(node, symtab_section, strtab,
-				section_headers);
+				section_headers, shstrtab);
 }

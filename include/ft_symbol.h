@@ -11,7 +11,7 @@ typedef struct s_symbol
 	unsigned char	info;
 	unsigned char	other;
 	uint16_t		shndx;
-	char 			type;
+	char			type;
 }	t_symbol;
 
 t_symbol	*new_symbol(char *name, Elf64_Addr value, unsigned char info,

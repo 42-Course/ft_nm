@@ -11,8 +11,15 @@ static int	should_display_symbol(void *content, void *param)
 
 	symbol = (t_symbol *)content;
 	opts = (t_nm_options *)param;
+	if (!symbol->name || !symbol->name[0])
+	{
+		if (symbol->shndx == SHN_UNDEF)
+			return (0);
+		if (!opts->debug_syms)
+			return (0);
+	}
 	type = ELF64_ST_TYPE(symbol->info);
-	if (!opts->debug_syms && type == STT_FILE)
+	if (!opts->debug_syms && (type == STT_FILE || type == STT_SECTION))
 		return (0);
 	if (opts->undefined_only && symbol->shndx != SHN_UNDEF)
 		return (0);
