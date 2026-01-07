@@ -1,4 +1,5 @@
 #include "ft_nm.h"
+#include "ft_nm_node.h"
 
 static void	print_help(void)
 {
@@ -17,31 +18,23 @@ static void	print_help(void)
 int	main(int argc, char **argv)
 {
 	t_nm_options	opts;
+	t_list				*nm_nodes;
 
+	nm_nodes = NULL;
 	init_options(&opts);
-	if (!parse_arguments(&opts, argc, argv))
+	if (!parse_arguments(&opts, argc, argv, &nm_nodes))
 	{
 		ft_putstr_fd("Usage: ft_nm [option(s)] [file(s)]\n", 2);
-		ft_lstclear(&opts.files, NULL);
+		ft_lstclear(&nm_nodes, (void (*)(void *))destroy_node);
 		return (1);
 	}
 	if (opts.help)
 	{
 		print_help();
-		ft_lstclear(&opts.files, NULL);
+		ft_lstclear(&nm_nodes, (void (*)(void *))destroy_node);
 		return (0);
 	}
-	if (opts.debug_syms)
-		ft_putstr_fd("Debug symbols enabled\n", 1);
-	if (opts.extern_only)
-		ft_putstr_fd("Extern-only enabled\n", 1);
-	if (opts.undefined_only)
-		ft_putstr_fd("Undefined-only enabled\n", 1);
-	if (opts.reverse_sort)
-		ft_putstr_fd("Reverse sort enabled\n", 1);
-	if (opts.no_sort)
-		ft_putstr_fd("No sort enabled\n", 1);
-	nm(&opts);
-	ft_lstclear(&opts.files, NULL);
+	nm(&opts, nm_nodes);
+	ft_lstclear(&nm_nodes, (void (*)(void *))destroy_node);
 	return (0);
 }

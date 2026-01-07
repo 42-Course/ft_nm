@@ -14,6 +14,7 @@ static void	init_node_fields(t_nm_node *node, char *filename)
 	node->file_size = 0;
 	node->elf64_header = NULL;
 	node->elf32_header = NULL;
+	node->symbols = NULL;
 	node->error = NM_OK;
 }
 
@@ -94,6 +95,8 @@ void	destroy_node(t_nm_node *node)
 			free(node->filename);
 		if (node->file_content && node->file_size > 0)
 			munmap(node->file_content, node->file_size);
+		if (node->symbols)
+			ft_lstclear(&node->symbols, destroy_symbol);
 		free(node);
 	}
 }

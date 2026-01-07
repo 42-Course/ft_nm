@@ -14,7 +14,12 @@ LIBFT = $(LIBFT_DIR)/libft.a
 SRC = $(SRC_DIR)/main.c \
 	$(SRC_DIR)/ft_options.c \
 	$(SRC_DIR)/ft_nm.c \
-	$(SRC_DIR)/ft_nm_node.c
+	$(SRC_DIR)/ft_nm_node.c \
+	$(SRC_DIR)/ft_symbol.c \
+	$(SRC_DIR)/ft_extract.c \
+	$(SRC_DIR)/ft_filter.c \
+	$(SRC_DIR)/ft_sort.c \
+	$(SRC_DIR)/ft_print.c
 
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

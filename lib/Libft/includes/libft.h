@@ -79,6 +79,8 @@ void		ft_lstadd_back(t_list **lst, t_list *new);
 void		ft_lstdelone(t_list *lst, void (*del)(void *));
 void		ft_lstdelelem(t_list **lst, t_list *elem, void (*del)(void *));
 void		ft_lstclear(t_list **lst, void (*del)(void *));
+void		ft_lstfilter(t_list **lst, int (*predicate)(void *), void (*del)(void *));
+void		ft_lstfilter_param(t_list **lst, int (*predicate)(void *, void *), void (*del)(void *), void *param);
 void		ft_lstiter(t_list *lst, void (*f)(void *));
 void		ft_lstiter_param(t_list *lst, void (*f)(void *, void *), void * ptr);
 void		ft_lstadd_front_cmp(t_list **lst, t_list *new, int (*cmp)(void *, void *));

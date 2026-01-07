@@ -9,7 +9,7 @@ void	init_options(t_nm_options *opts)
 	opts->undefined_only = 0;
 	opts->reverse_sort = 0;
 	opts->no_sort = 0;
-	opts->files = NULL;
+	opts->single_file_mode = 1;
 }
 
 static int	parse_short_option(t_nm_options *opts, char opt)
@@ -81,7 +81,7 @@ static int	handle_short_option_arg(t_nm_options *opts, char *arg)
 	return (1);
 }
 
-static int	add_file_to_list(t_nm_options *opts, char *filename)
+static int	add_file_to_list(char *filename, t_list **nm_nodes)
 {
 	t_list		*node;
 	t_nm_node	*nm_node;
@@ -95,16 +95,16 @@ static int	add_file_to_list(t_nm_options *opts, char *filename)
 		destroy_node(nm_node);
 		return (0);
 	}
-	ft_lstadd_back(&opts->files, node);
+	ft_lstadd_back(nm_nodes, node);
 	return (1);
 }
 
-static int	add_default_file(t_nm_options *opts)
+static int	add_default_file(t_list **nm_nodes)
 {
 	t_list		*node;
 	t_nm_node	*nm_node;
 
-	if (opts->files == NULL)
+	if (*nm_nodes == NULL)
 	{
 		nm_node = new_nm_node("a.out");
 		if (!nm_node)
@@ -115,12 +115,12 @@ static int	add_default_file(t_nm_options *opts)
 			destroy_node(nm_node);
 			return (0);
 		}
-		ft_lstadd_back(&opts->files, node);
+		ft_lstadd_back(nm_nodes, node);
 	}
 	return (1);
 }
 
-static int	process_argument(t_nm_options *opts, char *arg, int *parse_opts)
+static int	process_argument(t_nm_options *opts, char *arg, int *parse_opts, t_list **nm_nodes)
 {
 	if (*parse_opts && ft_strcmp(arg, "--") == 0)
 	{
@@ -134,10 +134,10 @@ static int	process_argument(t_nm_options *opts, char *arg, int *parse_opts)
 		else
 			return (handle_short_option_arg(opts, arg));
 	}
-	return (add_file_to_list(opts, arg));
+	return (add_file_to_list(arg, nm_nodes));
 }
 
-int	parse_arguments(t_nm_options *opts, int argc, char **argv)
+int	parse_arguments(t_nm_options *opts, int argc, char **argv, t_list **nm_nodes)
 {
 	int	i;
 	int	parse_opts;
@@ -146,9 +146,12 @@ int	parse_arguments(t_nm_options *opts, int argc, char **argv)
 	parse_opts = 1;
 	while (i < argc)
 	{
-		if (!process_argument(opts, argv[i], &parse_opts))
+		if (!process_argument(opts, argv[i], &parse_opts, nm_nodes))
 			return (0);
 		i++;
 	}
-	return (add_default_file(opts));
+	if (add_default_file(nm_nodes) == 0)
+		return (0);
+	opts->single_file_mode = (ft_lstsize(*nm_nodes) == 1);
+	return (1);
 }

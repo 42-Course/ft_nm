@@ -1,37 +1,13 @@
 #include "ft_nm.h"
-#include "ft_nm_node.h"
+#include "ft_extract.h"
+#include "ft_filter.h"
+#include "ft_sort.h"
+#include "ft_print.h"
 
-static void	print_error(t_nm_node *node)
+void	nm(t_nm_options *opts, t_list *nm_nodes)
 {
-	ft_putstr_fd("ft_nm: '", 2);
-	ft_putstr_fd(node->filename, 2);
-	ft_putstr_fd("': ", 2);
-	if (node->error == NM_ERR_NO_FILE)
-		ft_putstr_fd("No such file\n", 2);
-	else if (node->error == NM_ERR_PERMISSION)
-		ft_putstr_fd("Permission denied\n", 2);
-	else if (node->error == NM_ERR_FSTAT)
-		ft_putstr_fd("fstat failed\n", 2);
-	else if (node->error == NM_ERR_MMAP)
-		ft_putstr_fd("mmap failed\n", 2);
-	else if (node->error == NM_ERR_NOT_ELF)
-		ft_putstr_fd("file format not recognized\n", 2);
-}
-
-static void	process_node(t_nm_node *node, t_nm_options *opts)
-{
-	if (!node)
-		return ;
-	if (node->error != NM_OK)
-	{
-		print_error(node);
-		return ;
-	}
-	(void)opts;
-	printf("Processing file: %s\n", node->filename);
-}
-
-void	nm(t_nm_options *opts)
-{
-	ft_lstiter_param(opts->files, (void (*)(void *, void *))process_node, opts);
+	ft_lstiter(nm_nodes, (void (*)(void *))extract_nm_symbols);
+	ft_lstiter_param(nm_nodes, (void (*)(void *, void *))filter_symbols, opts);
+	ft_lstiter_param(nm_nodes, (void (*)(void *, void *))sort_symbols, opts);
+	ft_lstiter_param(nm_nodes, (void (*)(void *, void *))print_nm_symbols, opts);
 }

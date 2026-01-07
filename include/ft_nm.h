@@ -17,6 +17,6 @@ fstat(2) malloc(3) free(3) exit(3) perror(3)
 strerror(1) getpagesize(2)
 */
 
-void nm(t_nm_options *opts);
+void nm(t_nm_options *opts, t_list *nm_nodes);
 
 #endif
